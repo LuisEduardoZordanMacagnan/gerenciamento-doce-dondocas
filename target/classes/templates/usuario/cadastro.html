@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+        }
+        body{
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            flex-direction: column;
+        }
+        #cadastro{
+            border: 2px solid black;
+            padding: 10px;
+            background-color: darkgray;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+    </style>
+</head>
+<body>
+    <form action="cadastro" id="cadastro" method="post">
+        <input th:value="${usuario != null ? usuario.id : 0}" type="hidden" id="id" name="id">
+        <input th:value="${usuario?.cpf}" type="text" id="cpf" name="cpf" placeholder="CPF">
+        <input th:value="${usuario?.nome}" type="text" name="nome" id="nome" placeholder="Nome">
+        <input type="text" name="senha" id="senha" placeholder="Senha">
+        <input type="submit" value="Finalizar">
+    </form>
+    <span th:if="erro != null" th:text="${erro}"></span>
+</body>
+</html>
