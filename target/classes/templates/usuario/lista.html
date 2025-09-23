@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+        }
+        body{
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            flex-direction: column;
+        }
+        #centro{
+            border: 2px solid black;
+            padding: 10px;
+            background-color: darkgray;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+    </style>
+</head>
+<body>
+<ul id="centro">
+    <li th:each="usuario : ${usuarios}">
+        <span th:text="${usuario.nome}">Nome</span>
+        <a th:href="@{'cadastro/'+${usuario.id}}"><button>Editar</button></a>
+        <a th:href="@{'delete/'+${usuario.id}}"><button>Deletar</button></a>
+    </li>
+</ul>
+<a href="cadastro"><button>Adicionar</button></a>
+</body>
+</html>

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+        }
+        body{
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            flex-direction: column;
+        }
+        #login{
+            border: 2px solid black;
+            padding: 10px;
+            background-color: darkgray;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+    </style>
+</head>
+<body>
+    <form action="logar" id="login" method="post">
+        <input type="text" id="cpf" name="cpf" placeholder="CPF">
+        <input type="password" name="senha" id="senha" placeholder="Senha">
+        <input type="submit" value="Login">
+    </form>
+    <div th:if="${erro != null}" th:text="${erro}"></div>
+
+</body>
+</html>
