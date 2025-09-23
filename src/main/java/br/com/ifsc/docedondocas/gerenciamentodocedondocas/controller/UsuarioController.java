@@ -3,6 +3,7 @@ package br.com.ifsc.docedondocas.gerenciamentodocedondocas.controller;
 import br.com.ifsc.docedondocas.gerenciamentodocedondocas.model.Usuario;
 import br.com.ifsc.docedondocas.gerenciamentodocedondocas.repository.UsuarioRepository;
 import br.com.ifsc.docedondocas.gerenciamentodocedondocas.service.CookieService;
+import br.com.ifsc.docedondocas.gerenciamentodocedondocas.service.EmailService;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,8 +11,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.UnsupportedEncodingException;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/usuario")
@@ -20,6 +25,12 @@ public class UsuarioController {
 
     @Autowired
     private UsuarioRepository u;
+
+    @Autowired
+    private EmailService emailService;
+
+    @Autowired
+    private JavaMailSender mailSender;
 
     @GetMapping("/login")
     public String login() {
@@ -44,6 +55,37 @@ public class UsuarioController {
         CookieService.setCookie(response, "usuarioId", "", 0);
         CookieService.setCookie(response, "usuarioNome", "", 0);
         return "redirect:"+root+"/login";
+    }
+
+    @PostMapping("/recuperar-senha")
+    public String recuperarSenha(@RequestParam String cpf, Model model) {
+
+        Usuario usuario = u.findByCpf(cpf);
+
+        if (usuario != null) {
+            if (usuario.getEmail() == null || usuario.getEmail().isEmpty()) {
+                model.addAttribute("erro", "Usuário não possui email cadastrado!");
+                return "usuario/esqueci-senha";
+            }
+
+            try {
+                String assunto = "Recuperação de Senha - Doce Don Docas";
+                String mensagem = String.format(
+                        "Olá %s!\n\nSua senha é: %s\n\nAtenciosamente,\nEquipe Doce Don Docas",
+                        usuario.getNome(),
+                        usuario.getSenha()
+                );
+
+                emailService.enviarEmail(usuario.getEmail(), assunto, mensagem);
+                model.addAttribute("sucesso", "Senha enviada para: " + usuario.getEmail());
+            } catch (Exception e) {
+                model.addAttribute("erro", "Erro ao enviar email: " + e.getMessage());
+            }
+        } else {
+            model.addAttribute("erro", "CPF não encontrado!");
+        }
+
+        return "usuario/esqueci-senha";
     }
 
     @GetMapping("/cadastro")
@@ -88,4 +130,10 @@ public class UsuarioController {
         u.deleteById(id.toString());
         return "redirect:"+root+"/lista";
     }
+
+    @GetMapping("/esqueci-senha")
+    public String esqueciSenha() {
+        return "usuario/esqueci-senha";
+    }
+
 }

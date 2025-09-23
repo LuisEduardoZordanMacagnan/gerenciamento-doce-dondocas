@@ -21,6 +21,9 @@ public class Usuario {
     @NotEmpty
     private String senha;
 
+    @NotEmpty
+    private String email;
+
     public void setId(long id) {
         this.id = id;
     }
@@ -52,4 +55,10 @@ public class Usuario {
     public void setSenha(String senha) {
         this.senha = senha;
     }
+
+    public String getEmail() {
+        return email; }
+
+    public void setEmail(String email)
+    { this.email = email; }
 }

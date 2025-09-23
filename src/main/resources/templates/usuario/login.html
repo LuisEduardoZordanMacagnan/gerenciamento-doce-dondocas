@@ -27,12 +27,14 @@
     </style>
 </head>
 <body>
-    <form action="logar" id="login" method="post">
-        <input type="text" id="cpf" name="cpf" placeholder="CPF">
-        <input type="password" name="senha" id="senha" placeholder="Senha">
-        <input type="submit" value="Login">
-    </form>
-    <div th:if="${erro != null}" th:text="${erro}"></div>
+<form th:action="@{/usuario/logar}" id="login" method="post">
+    <input type="text" id="cpf" name="cpf" placeholder="CPF">
+    <input type="password" name="senha" id="senha" placeholder="Senha">
+    <input type="submit" value="Login">
+</form>
+<div th:if="${erro != null}" th:text="${erro}"></div>
+
+<a th:href="@{/usuario/esqueci-senha}">Esqueci minha senha</a>
 
 </body>
 </html>

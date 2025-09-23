@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta charset="UTF-8">
+        <title>Esqueci Senha</title>
+    </head>
+    <body>
+        <h2>Recuperar Senha</h2>
+        <form method="post" action="recuperar-senha">
+            <input type="text" name="cpf" placeholder="Digite seu CPF">
+            <button type="submit">Enviar Senha</button>
+        </form>
+
+        <div th:if="${sucesso}" style="color:green" th:text="${sucesso}"></div>
+        <div th:if="${erro}" style="color:red" th:text="${erro}"></div>
+
+        <a href="login">Voltar ao Login</a>
+    </body>
+</html>
