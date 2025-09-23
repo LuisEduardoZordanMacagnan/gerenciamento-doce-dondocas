@@ -27,13 +27,15 @@
     </style>
 </head>
 <body>
-    <form action="cadastro" id="cadastro" method="post">
-        <input th:value="${usuario != null ? usuario.id : 0}" type="hidden" id="id" name="id">
-        <input th:value="${usuario?.cpf}" type="text" id="cpf" name="cpf" placeholder="CPF">
-        <input th:value="${usuario?.nome}" type="text" name="nome" id="nome" placeholder="Nome">
-        <input type="text" name="senha" id="senha" placeholder="Senha">
-        <input type="submit" value="Finalizar">
-    </form>
-    <span th:if="erro != null" th:text="${erro}"></span>
+<form action="cadastro" id="cadastro" method="post">
+    <input th:value="${usuario != null ? usuario.id : 0}" type="hidden" id="id" name="id">
+    <input th:value="${usuario?.cpf}" type="text" id="cpf" name="cpf" placeholder="CPF">
+    <input th:value="${usuario?.nome}" type="text" name="nome" id="nome" placeholder="Nome">
+    <input th:value="${usuario?.email}" type="email" name="email" id="email" placeholder="Email">
+    <input type="text" name="senha" id="senha" placeholder="Senha">
+
+    <input type="submit" value="Finalizar">
+</form>
+<span th:if="erro != null" th:text="${erro}"></span>
 </body>
 </html>
