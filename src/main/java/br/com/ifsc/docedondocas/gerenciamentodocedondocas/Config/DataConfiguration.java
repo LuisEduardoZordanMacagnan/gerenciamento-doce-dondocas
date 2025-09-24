@@ -1,16 +1,22 @@
-package br.com.ifsc.docedondocas.gerenciamentodocedondocas;
+package br.com.ifsc.docedondocas.gerenciamentodocedondocas.Config;
 
 import io.github.cdimascio.dotenv.Dotenv;
+import jakarta.persistence.EntityManagerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.JpaVendorAdapter;
+import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.Database;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
+import org.springframework.transaction.PlatformTransactionManager;
 
 import javax.sql.DataSource;
 
 @Configuration
+@EnableJpaRepositories(basePackages = "br.com.ifsc.docedondocas.gerenciamentodocedondocas.repository")
 public class DataConfiguration {
 
     @Bean
@@ -33,5 +39,20 @@ public class DataConfiguration {
         adapter.setDatabasePlatform("org.hibernate.dialect.MariaDBDialect");
         adapter.setPrepareConnection(true);
         return adapter;
+    }
+
+    @Bean
+    public LocalContainerEntityManagerFactoryBean entityManagerFactory(DataSource dataSource, JpaVendorAdapter jpaVendorAdapter) {
+        LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
+        em.setDataSource(dataSource);
+        em.setJpaVendorAdapter(jpaVendorAdapter);
+        em.setPackagesToScan("br.com.ifsc.docedondocas.gerenciamentodocedondocas.model.usuario"); // pacote correto das entidades
+        em.setPersistenceUnitName("default"); // importante
+        return em;
+    }
+
+    @Bean
+    public PlatformTransactionManager transactionManager(LocalContainerEntityManagerFactoryBean emf) {
+        return new JpaTransactionManager(emf.getObject());
     }
 }

@@ -1,36 +1,53 @@
 package br.com.ifsc.docedondocas.gerenciamentodocedondocas.controller;
 
-import br.com.ifsc.docedondocas.gerenciamentodocedondocas.model.Usuario;
+import br.com.ifsc.docedondocas.gerenciamentodocedondocas.model.usuario.Usuario;
+import br.com.ifsc.docedondocas.gerenciamentodocedondocas.model.usuario.UsuarioRole;
+import br.com.ifsc.docedondocas.gerenciamentodocedondocas.repository.UserDetailRepository;
 import br.com.ifsc.docedondocas.gerenciamentodocedondocas.repository.UsuarioRepository;
 import br.com.ifsc.docedondocas.gerenciamentodocedondocas.service.CookieService;
 import br.com.ifsc.docedondocas.gerenciamentodocedondocas.service.EmailService;
+import br.com.ifsc.docedondocas.gerenciamentodocedondocas.service.TokenService;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.UnsupportedEncodingException;
-import java.util.Optional;
 
 @Controller
 @RequestMapping("/usuario")
 public class UsuarioController {
+    private static final Logger log = LoggerFactory.getLogger(UsuarioController.class);
     private String root = "/usuario";
 
     @Autowired
     private UsuarioRepository u;
 
     @Autowired
+    private UserDetailRepository userDetailRepository;
+
+    @Autowired
     private EmailService emailService;
 
     @Autowired
     private JavaMailSender mailSender;
+
+    @Autowired
+    private AuthenticationManager authenticationManager;
+    @Autowired
+    private UsuarioRepository usuarioRepository;
+
+    @Autowired
+    TokenService tokenService;
 
     @GetMapping("/login")
     public String login() {
@@ -39,10 +56,15 @@ public class UsuarioController {
 
     @PostMapping("/logar")
     public String login(Usuario usuario, Model model, HttpServletResponse response) throws UnsupportedEncodingException {
-        Usuario uLogin = u.login(usuario.getCpf(), usuario.getSenha());
-        if (uLogin != null) {
-            CookieService.setCookie(response, "usuarioId", String.valueOf(uLogin.getId()), 10000);
-            CookieService.setCookie(response, "usuarioNome", uLogin.getNome(), 10000);
+        var usernamePassword = new UsernamePasswordAuthenticationToken(usuario.getCpf(), usuario.getSenha());
+        var auth = this.authenticationManager.authenticate(usernamePassword);
+        //Usuario uLogin = u.login(usuario.getCpf(), usuario.getSenha());
+
+        if (auth.isAuthenticated()) {
+            /*CookieService.setCookie(response, "usuarioId", String.valueOf(uLogin.getId()), 10000);
+            CookieService.setCookie(response, "usuarioNome", uLogin.getNome(), 10000);*/
+            var token = tokenService.generateToken((Usuario) auth.getPrincipal());
+            CookieService.setCookie(response, "token", token, 10000);
             return "redirect:"+root+"/lista";
         }
 
@@ -95,10 +117,14 @@ public class UsuarioController {
 
     @RequestMapping(value = "/cadastro", method = RequestMethod.POST)
     public String cadastroUsuario(@Valid Usuario usuario, BindingResult result, Model model) {
-        if(result.hasErrors()){
+        if(result.hasErrors()) {
             model.addAttribute("erro", "Erro");
             return "usuario/cadastro";
         }
+        String senhaEncriptada = new BCryptPasswordEncoder().encode(usuario.getSenha());
+        usuario.setSenha(senhaEncriptada);
+        //EDITAR DEPOIS
+        usuario.setRole(UsuarioRole.ADMIN);
         u.save(usuario);
         return "redirect:"+root+"/lista";
     }
@@ -116,11 +142,21 @@ public class UsuarioController {
     }
 
     @RequestMapping(value = "/cadastro/{id}", method = RequestMethod.POST)
-    public String editarUsuario(@Valid Usuario usuario, BindingResult result, Model model){
-        if(result.hasErrors()){
+    public String editarUsuario(@Valid Usuario us, BindingResult result, Model model){
+        Usuario usuario = u.findById(us.getId());
+        if(usuario == null) {
             model.addAttribute("erro", "Erro");
             return "usuario/cadastro";
         }
+        usuario.setNome(us.getNome());
+        usuario.setCpf(us.getCpf());
+        if (us.getSenha() != null) {
+            usuario.setSenha(new BCryptPasswordEncoder().encode(us.getSenha()));
+        }
+        usuario.setEmail(us.getEmail());
+        //EDITAR DEPOIS
+        usuario.setRole(UsuarioRole.ADMIN);
+
         u.save(usuario);
         return "redirect:"+root+"/lista";
     }

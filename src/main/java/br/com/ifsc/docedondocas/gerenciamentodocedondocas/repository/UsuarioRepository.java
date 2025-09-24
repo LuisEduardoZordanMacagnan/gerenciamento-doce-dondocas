@@ -1,9 +1,9 @@
 package br.com.ifsc.docedondocas.gerenciamentodocedondocas.repository;
 
-import br.com.ifsc.docedondocas.gerenciamentodocedondocas.model.Usuario;
-import io.github.cdimascio.dotenv.Dotenv;
+import br.com.ifsc.docedondocas.gerenciamentodocedondocas.model.usuario.Usuario;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.security.core.userdetails.UserDetails;
 
 public interface UsuarioRepository extends CrudRepository<Usuario, String> {
 
@@ -18,4 +18,7 @@ public interface UsuarioRepository extends CrudRepository<Usuario, String> {
     Usuario getUsuarioById(long id);
 
     long id(long id);
+
+    @Query(value = "SELECT * FROM docedondocas.usuario WHERE id = :id", nativeQuery = true)
+    public UserDetails userDetailsFindById(String cpf);
 }
