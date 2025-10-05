@@ -36,6 +36,7 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.POST, "/usuario/logar").permitAll()
                         .requestMatchers(HttpMethod.GET, "error").permitAll()
                         .requestMatchers(HttpMethod.GET, "/usuario/esqueci-senha").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/usuario/recuperar-senha").permitAll()
                         .anyRequest().authenticated())
                 //.formLogin(form -> form.loginPage("/usuario/login"))
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
