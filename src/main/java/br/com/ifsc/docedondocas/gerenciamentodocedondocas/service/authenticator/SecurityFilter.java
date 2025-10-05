@@ -42,8 +42,9 @@ public class SecurityFilter extends OncePerRequestFilter {
     private String recoverToken(HttpServletRequest request) throws UnsupportedEncodingException {
         var authHeader = request.getHeader("Authorization");
         if (authHeader == null ){
-            String token = CookieService.getCookie(request, "token");
-            return token;
+            /*String token = CookieService.getCookie(request, "token");
+            return token;*/
+            return null;
         };
         return authHeader.replace("Bearer ", "");
     }

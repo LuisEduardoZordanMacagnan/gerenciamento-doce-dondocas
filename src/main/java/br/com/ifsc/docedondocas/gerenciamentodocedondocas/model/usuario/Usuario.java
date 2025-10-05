@@ -5,6 +5,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.validation.constraints.NotEmpty;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -13,21 +15,22 @@ import java.util.Collection;
 import java.util.List;
 
 @Entity
+@Getter @Setter
 public class Usuario implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @NotEmpty
+    @NotEmpty(message = "O nome não pode estar vazio")
     private String nome;
 
-    @NotEmpty
+    @NotEmpty(message = "O cpf não pode estar vazio")
     private String cpf;
 
-    @NotEmpty
+    @NotEmpty(message = "A senha não pode estar vazia")
     private String senha;
 
-    @NotEmpty
+    @NotEmpty(message = "O email não pode estar vazio")
     private String email;
 
     //@NotEmpty
@@ -50,52 +53,6 @@ public class Usuario implements UserDetails {
     @Override
     public String getUsername() {
         return this.cpf;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public String getNome() {
-        return nome;
-    }
-
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
-
-    public String getCpf() {
-        return cpf;
-    }
-
-    public void setCpf(String cpf) {
-        this.cpf = cpf;
-    }
-
-    public String getSenha() {
-        return senha;
-    }
-
-    public void setSenha(String senha) {
-        this.senha = senha;
-    }
-
-    public String getEmail() {
-        return email; }
-
-    public void setEmail(String email)
-    { this.email = email; }
-
-    public UsuarioRole getRole() {
-        return role;
-    }
-
-    public void setRole(UsuarioRole role) {
-        this.role = role;
     }
 
     public Usuario(String nome, String cpf, String senha, String email, UsuarioRole role) {
