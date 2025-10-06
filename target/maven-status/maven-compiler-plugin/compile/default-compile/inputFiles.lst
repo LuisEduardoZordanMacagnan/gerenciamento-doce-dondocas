@@ -1,0 +1,15 @@
+C:\Users\User\IdeaProjects\gerenciamento-doce-dondocas\src\main\java\br\com\ifsc\docedondocas\gerenciamentodocedondocas\Config\DataConfiguration.java
+C:\Users\User\IdeaProjects\gerenciamento-doce-dondocas\src\main\java\br\com\ifsc\docedondocas\gerenciamentodocedondocas\Config\SecurityConfiguration.java
+C:\Users\User\IdeaProjects\gerenciamento-doce-dondocas\src\main\java\br\com\ifsc\docedondocas\gerenciamentodocedondocas\controller\UsuarioController.java
+C:\Users\User\IdeaProjects\gerenciamento-doce-dondocas\src\main\java\br\com\ifsc\docedondocas\gerenciamentodocedondocas\GerenciamentoDoceDondocasApplication.java
+C:\Users\User\IdeaProjects\gerenciamento-doce-dondocas\src\main\java\br\com\ifsc\docedondocas\gerenciamentodocedondocas\model\usuario\AuthenticationDTO.java
+C:\Users\User\IdeaProjects\gerenciamento-doce-dondocas\src\main\java\br\com\ifsc\docedondocas\gerenciamentodocedondocas\model\usuario\Usuario.java
+C:\Users\User\IdeaProjects\gerenciamento-doce-dondocas\src\main\java\br\com\ifsc\docedondocas\gerenciamentodocedondocas\model\usuario\UsuarioDTO.java
+C:\Users\User\IdeaProjects\gerenciamento-doce-dondocas\src\main\java\br\com\ifsc\docedondocas\gerenciamentodocedondocas\model\usuario\UsuarioRole.java
+C:\Users\User\IdeaProjects\gerenciamento-doce-dondocas\src\main\java\br\com\ifsc\docedondocas\gerenciamentodocedondocas\repository\UserDetailRepository.java
+C:\Users\User\IdeaProjects\gerenciamento-doce-dondocas\src\main\java\br\com\ifsc\docedondocas\gerenciamentodocedondocas\repository\UsuarioRepository.java
+C:\Users\User\IdeaProjects\gerenciamento-doce-dondocas\src\main\java\br\com\ifsc\docedondocas\gerenciamentodocedondocas\service\authenticator\AuthorizationService.java
+C:\Users\User\IdeaProjects\gerenciamento-doce-dondocas\src\main\java\br\com\ifsc\docedondocas\gerenciamentodocedondocas\service\authenticator\SecurityFilter.java
+C:\Users\User\IdeaProjects\gerenciamento-doce-dondocas\src\main\java\br\com\ifsc\docedondocas\gerenciamentodocedondocas\service\CookieService.java
+C:\Users\User\IdeaProjects\gerenciamento-doce-dondocas\src\main\java\br\com\ifsc\docedondocas\gerenciamentodocedondocas\service\EmailService.java
+C:\Users\User\IdeaProjects\gerenciamento-doce-dondocas\src\main\java\br\com\ifsc\docedondocas\gerenciamentodocedondocas\service\TokenService.java
