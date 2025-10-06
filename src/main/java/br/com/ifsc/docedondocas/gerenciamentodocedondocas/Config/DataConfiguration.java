@@ -16,7 +16,6 @@ import org.springframework.transaction.PlatformTransactionManager;
 import javax.sql.DataSource;
 
 @Configuration
-@EnableJpaRepositories(basePackages = "br.com.ifsc.docedondocas.gerenciamentodocedondocas.repository")
 public class DataConfiguration {
 
     @Bean
@@ -39,16 +38,6 @@ public class DataConfiguration {
         adapter.setDatabasePlatform("org.hibernate.dialect.MariaDBDialect");
         adapter.setPrepareConnection(true);
         return adapter;
-    }
-
-    @Bean
-    public LocalContainerEntityManagerFactoryBean entityManagerFactory(DataSource dataSource, JpaVendorAdapter jpaVendorAdapter) {
-        LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
-        em.setDataSource(dataSource);
-        em.setJpaVendorAdapter(jpaVendorAdapter);
-        em.setPackagesToScan("br.com.ifsc.docedondocas.gerenciamentodocedondocas.model.usuario"); // pacote correto das entidades
-        em.setPersistenceUnitName("default"); // importante
-        return em;
     }
 
     @Bean

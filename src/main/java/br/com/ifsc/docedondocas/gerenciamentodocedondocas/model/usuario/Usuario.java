@@ -1,12 +1,16 @@
 package br.com.ifsc.docedondocas.gerenciamentodocedondocas.model.usuario;
 
+import br.com.ifsc.docedondocas.gerenciamentodocedondocas.model.Pessoa;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.validation.constraints.NotEmpty;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -16,17 +20,10 @@ import java.util.List;
 
 @Entity
 @Getter @Setter
-public class Usuario implements UserDetails {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
-
-    @NotEmpty(message = "O nome não pode estar vazio")
-    private String nome;
-
-    @NotEmpty(message = "O cpf não pode estar vazio")
-    private String cpf;
-
+@NoArgsConstructor
+@AllArgsConstructor
+@SuperBuilder
+public class Usuario extends Pessoa implements UserDetails {
     @NotEmpty(message = "A senha não pode estar vazia")
     private String senha;
 
@@ -35,10 +32,6 @@ public class Usuario implements UserDetails {
 
     //@NotEmpty
     private UsuarioRole role;
-
-    public Usuario() {
-
-    }
 
     public Collection<? extends GrantedAuthority> getAuthorities(){
         if (this.role == UsuarioRole.ADMIN) return List.of(new SimpleGrantedAuthority("ROLE_ADMIN"), new SimpleGrantedAuthority("ROLE_USER"));
@@ -52,14 +45,13 @@ public class Usuario implements UserDetails {
 
     @Override
     public String getUsername() {
-        return this.cpf;
+        return this.getCpf();
     }
 
-    public Usuario(String nome, String cpf, String senha, String email, UsuarioRole role) {
-        this.nome = nome;
-        this.cpf = cpf;
+    /*public Usuario(String nome, String cpf, String senha, String email, UsuarioRole role) {
+        super(nome, cpf);
         this.senha = senha;
         this.email = email;
         this.role = role;
-    }
+    }*/
 }

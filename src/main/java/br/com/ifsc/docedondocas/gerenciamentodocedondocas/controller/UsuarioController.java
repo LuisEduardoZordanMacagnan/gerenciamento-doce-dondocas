@@ -29,13 +29,9 @@ import java.io.UnsupportedEncodingException;
 @RequestMapping("/usuario")
 public class UsuarioController {
     private static final Logger log = LoggerFactory.getLogger(UsuarioController.class);
-    private String root = "/usuario";
 
     @Autowired
     private UsuarioRepository u;
-
-    @Autowired
-    private UserDetailRepository userDetailRepository;
 
     @Autowired
     private EmailService emailService;
@@ -45,8 +41,6 @@ public class UsuarioController {
 
     @Autowired
     private AuthenticationManager authenticationManager;
-    @Autowired
-    private UsuarioRepository usuarioRepository;
 
     @Autowired
     TokenService tokenService;
@@ -74,7 +68,7 @@ public class UsuarioController {
     public String sair(HttpServletResponse response) throws UnsupportedEncodingException {
         CookieService.setCookie(response, "usuarioId", "", 0);
         CookieService.setCookie(response, "usuarioNome", "", 0);
-        return "redirect:"+root+"/login";
+        return null;
     } //REPLANEJAR ^^
 
     @PostMapping("/recuperar-senha")
@@ -110,25 +104,32 @@ public class UsuarioController {
 
     @RequestMapping(value = "/cadastro", method = RequestMethod.POST)
     public ResponseEntity cadastroUsuario(@Valid @RequestBody UsuarioDTO data) {
+        System.out.println(data.nome());
         String senhaEncriptada = new BCryptPasswordEncoder().encode(data.senha());
-        Usuario usuario = new Usuario(data.nome(), data.cpf(), senhaEncriptada, data.email(), data.role());
+        Usuario usuario = Usuario.builder()
+                .nome(data.nome())
+                .cpf(data.cpf())
+                .senha(senhaEncriptada)
+                .email(data.email())
+                .role(data.role())
+                .build(); //new Usuario(data.nome(), data.cpf(), senhaEncriptada, data.email(), data.role());
         //EDITAR DEPOIS
         usuario.setRole(UsuarioRole.ADMIN);
         u.save(usuario);
         return ResponseEntity.ok(usuario);
     }
 
-    @RequestMapping("/usuarios")
+    @RequestMapping(value = "/usuarios", method = RequestMethod.POST)
     public ResponseEntity listar(){
         return ResponseEntity.ok(u.findAll());
     }
 
-    @RequestMapping("/usuarios/{id}")
+    @RequestMapping(value = "/usuarios/{id}", method = RequestMethod.POST)
     public ResponseEntity listar(@PathVariable long id){
         return ResponseEntity.ok(u.getUsuarioById(id));
     }
 
-    @RequestMapping(value = "editar", method = RequestMethod.POST)
+    @RequestMapping(value = "/editar", method = RequestMethod.POST)
     public ResponseEntity editarUsuario(@Valid @RequestBody UsuarioDTO data){
         Usuario usuario = u.findById(data.id());
         if(usuario == null) {
@@ -145,7 +146,7 @@ public class UsuarioController {
         return ResponseEntity.ok(usuario);
     }
 
-    @RequestMapping("/delete/{id}")
+    @RequestMapping(value = "/delete/{id}", method = RequestMethod.POST)
     public ResponseEntity deletarUsuario(@PathVariable Long id){
         u.deleteById(id.toString());
         return ResponseEntity.ok(true);

@@ -9,10 +9,7 @@ public interface UsuarioRepository extends CrudRepository<Usuario, String> {
 
     Usuario findById(Long id);
 
-    @Query(value = "SELECT * FROM docedondocas.usuario WHERE cpf = :cpf AND senha = :senha", nativeQuery = true)
-    public Usuario login(String cpf, String senha);
-
-    @Query(value = "SELECT * FROM docedondocas.usuario WHERE cpf = :cpf", nativeQuery = true)
+    //@Query(value = "SELECT * FROM docedondocas.usuario WHERE cpf = :cpf", nativeQuery = true)
     public Usuario findByCpf(String cpf);
 
     Usuario getUsuarioById(long id);
