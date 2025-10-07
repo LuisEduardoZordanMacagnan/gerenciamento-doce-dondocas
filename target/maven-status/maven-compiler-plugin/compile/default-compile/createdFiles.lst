@@ -1,0 +1,3 @@
+br\com\ifsc\docedondocas\gerenciamentodocedondocas\Config\DataConfiguration.class
+br\com\ifsc\docedondocas\gerenciamentodocedondocas\Config\SecurityConfiguration.class
+br\com\ifsc\docedondocas\gerenciamentodocedondocas\service\authenticator\SecurityFilter.class
