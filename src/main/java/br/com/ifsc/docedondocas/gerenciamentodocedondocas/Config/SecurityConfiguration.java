@@ -32,11 +32,10 @@ public class SecurityConfiguration {
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorizeRequests -> authorizeRequests
-                        .requestMatchers(HttpMethod.GET, "/usuario/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/usuario/logar").permitAll()
                         .requestMatchers(HttpMethod.GET, "error").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/usuario/esqueci-senha").permitAll()
                         .requestMatchers(HttpMethod.POST, "/usuario/recuperar-senha").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/usuario/recuperar-senha/validar").permitAll()
                         .anyRequest().authenticated())
                 //.formLogin(form -> form.loginPage("/usuario/login"))
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
