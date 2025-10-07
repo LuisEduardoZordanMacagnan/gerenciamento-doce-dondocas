@@ -1,9 +1,6 @@
 package br.com.ifsc.docedondocas.gerenciamentodocedondocas.model.usuario;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -32,6 +29,9 @@ public class Usuario implements UserDetails {
 
     //@NotEmpty
     private UsuarioRole role;
+
+    @OneToOne(mappedBy = "user")
+    private ForgotPassword forgotPassword;
 
     public Usuario() {
 

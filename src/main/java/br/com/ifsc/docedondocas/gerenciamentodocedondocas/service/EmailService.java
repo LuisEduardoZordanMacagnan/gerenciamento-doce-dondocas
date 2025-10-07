@@ -1,5 +1,6 @@
 package br.com.ifsc.docedondocas.gerenciamentodocedondocas.service;
 
+import br.com.ifsc.docedondocas.gerenciamentodocedondocas.dto.MailBody;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -8,14 +9,20 @@ import org.springframework.stereotype.Service;
 @Service
 public class EmailService {
 
-    @Autowired
-    private JavaMailSender mailSender;
+    private final JavaMailSender javaMailSender;
 
-    public void enviarEmail(String destinatario, String assunto, String conteudo) {
-        SimpleMailMessage email = new SimpleMailMessage();
-        email.setTo(destinatario);
-        email.setSubject(assunto);
-        email.setText(conteudo);
-        mailSender.send(email);
+    public EmailService(JavaMailSender javaMailSender) {
+        this.javaMailSender = javaMailSender;
+    }
+
+    public void sendSimpleMessage(MailBody mailBody){
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(mailBody.to());
+        message.setFrom("guilherme.g2001@aluno.ifsc.edu.br");
+        message.setSubject(mailBody.subject());
+        message.setText(mailBody.text());
+
+        javaMailSender.send(message);
+
     }
 }

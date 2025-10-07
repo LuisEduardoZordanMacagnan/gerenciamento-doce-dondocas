@@ -79,37 +79,6 @@ public class UsuarioController {
         return "redirect:"+root+"/login";
     }
 
-    @PostMapping("/recuperar-senha")
-    public String recuperarSenha(@RequestParam String cpf, Model model) {
-
-        Usuario usuario = u.findByCpf(cpf);
-
-        if (usuario != null) {
-            if (usuario.getEmail() == null || usuario.getEmail().isEmpty()) {
-                model.addAttribute("erro", "Usuário não possui email cadastrado!");
-                return "usuario/esqueci-senha";
-            }
-
-            try {
-                String assunto = "Recuperação de Senha - Doce Don Docas";
-                String mensagem = String.format(
-                        "Olá %s!\n\nSua senha é: %s\n\nAtenciosamente,\nEquipe Doce Don Docas",
-                        usuario.getNome(),
-                        usuario.getSenha()
-                );
-
-                emailService.enviarEmail(usuario.getEmail(), assunto, mensagem);
-                model.addAttribute("sucesso", "Senha enviada para: " + usuario.getEmail());
-            } catch (Exception e) {
-                model.addAttribute("erro", "Erro ao enviar email: " + e.getMessage());
-            }
-        } else {
-            model.addAttribute("erro", "CPF não encontrado!");
-        }
-
-        return "usuario/esqueci-senha";
-    }
-
     @GetMapping("/cadastro")
     public String cadastro(){
         return "usuario/cadastro";
