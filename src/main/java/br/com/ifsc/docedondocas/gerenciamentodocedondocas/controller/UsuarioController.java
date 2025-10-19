@@ -1,5 +1,6 @@
 package br.com.ifsc.docedondocas.gerenciamentodocedondocas.controller;
 
+import br.com.ifsc.docedondocas.gerenciamentodocedondocas.model.usuario.RecuperacaoSenhaDDO;
 import br.com.ifsc.docedondocas.gerenciamentodocedondocas.model.usuario.Usuario;
 import br.com.ifsc.docedondocas.gerenciamentodocedondocas.model.usuario.UsuarioDTO;
 import br.com.ifsc.docedondocas.gerenciamentodocedondocas.model.usuario.UsuarioRole;
@@ -72,34 +73,33 @@ public class UsuarioController {
     } //REPLANEJAR ^^
 
     @PostMapping("/recuperar-senha")
-    public String recuperarSenha(@RequestParam String cpf, Model model) {
+    public ResponseEntity recuperarSenhaEmail(@Valid @RequestParam String cpf) {
 
         Usuario usuario = u.findByCpf(cpf);
 
-        if (usuario != null) {
-            if (usuario.getEmail() == null || usuario.getEmail().isEmpty()) {
-                model.addAttribute("erro", "Usuário não possui email cadastrado!");
-                return "usuario/esqueci-senha";
-            }
+        if ( usuario == null ) return ResponseEntity.notFound().build();
+        if ( usuario.getEmail() == null ) return ResponseEntity.badRequest().build();
 
-            try {
-                String assunto = "Recuperação de Senha - Doce Don Docas";
-                String mensagem = String.format(
-                        "Olá %s!\n\nSua senha é: %s\n\nAtenciosamente,\nEquipe Doce Don Docas",
-                        usuario.getNome(),
-                        usuario.getSenha()
-                );
+        try {
+            String assunto = "Recuperação de Senha - Doce Don Docas";
+            String mensagem = tokenService.generateTokenForgotPassword((Usuario) usuario);
 
-                emailService.enviarEmail(usuario.getEmail(), assunto, mensagem);
-                model.addAttribute("sucesso", "Senha enviada para: " + usuario.getEmail());
-            } catch (Exception e) {
-                model.addAttribute("erro", "Erro ao enviar email: " + e.getMessage());
-            }
-        } else {
-            model.addAttribute("erro", "CPF não encontrado!");
+            emailService.enviarEmail(usuario.getEmail(), assunto, mensagem);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
         }
 
-        return "usuario/esqueci-senha";
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/recuperar-senha/validar")
+    public ResponseEntity recuperarSenha(@Valid @RequestBody RecuperacaoSenhaDDO data) {
+        long id = tokenService.validateTokenForgotPassword(data.token());
+        Usuario usuario = u.findById(id);
+        if ( usuario == null ) return ResponseEntity.badRequest().build();
+        usuario.setSenha(new BCryptPasswordEncoder().encode(data.novaSenha()));
+        u.save(usuario);
+        return ResponseEntity.ok(usuario);
     }
 
     @RequestMapping(value = "/cadastro", method = RequestMethod.POST)
