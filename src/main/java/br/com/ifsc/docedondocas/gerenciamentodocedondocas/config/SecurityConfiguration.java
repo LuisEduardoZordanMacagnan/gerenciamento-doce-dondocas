@@ -1,4 +1,4 @@
-package br.com.ifsc.docedondocas.gerenciamentodocedondocas.Config;
+package br.com.ifsc.docedondocas.gerenciamentodocedondocas.config;
 
 import br.com.ifsc.docedondocas.gerenciamentodocedondocas.service.authenticator.SecurityFilter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,8 +32,9 @@ public class SecurityConfiguration {
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorizeRequests -> authorizeRequests
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/usuario/logar").permitAll()
-                        .requestMatchers(HttpMethod.GET, "error").permitAll()
+                        .requestMatchers(HttpMethod.GET, "errors").permitAll()
                         .requestMatchers(HttpMethod.POST, "/usuario/recuperar-senha").permitAll()
                         .requestMatchers(HttpMethod.POST, "/usuario/recuperar-senha/validar").permitAll()
                         .anyRequest().authenticated())

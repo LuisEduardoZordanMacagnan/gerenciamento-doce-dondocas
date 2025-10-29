@@ -104,7 +104,6 @@ public class UsuarioController {
 
     @RequestMapping(value = "/cadastro", method = RequestMethod.POST)
     public ResponseEntity cadastroUsuario(@Valid @RequestBody UsuarioDTO data) {
-        System.out.println(data.nome());
         String senhaEncriptada = new BCryptPasswordEncoder().encode(data.senha());
         Usuario usuario = Usuario.builder()
                 .nome(data.nome())

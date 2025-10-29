@@ -1,10 +1,8 @@
-package br.com.ifsc.docedondocas.gerenciamentodocedondocas.Config;
+package br.com.ifsc.docedondocas.gerenciamentodocedondocas.config;
 
 import io.github.cdimascio.dotenv.Dotenv;
-import jakarta.persistence.EntityManagerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.JpaVendorAdapter;

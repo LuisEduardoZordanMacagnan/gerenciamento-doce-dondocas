@@ -34,7 +34,7 @@ public class ClienteController {
         return ResponseEntity.ok(true);
     }
 
-    @RequestMapping(value = "editar", method = RequestMethod.POST)
+    @RequestMapping(value = "/editar", method = RequestMethod.POST)
     public ResponseEntity editarUsuario(@Valid @RequestBody Cliente data){
         Cliente cliente = clienteRepository.findById(data.getId());
         if(cliente == null) {

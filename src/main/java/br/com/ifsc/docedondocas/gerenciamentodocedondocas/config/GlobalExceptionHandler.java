@@ -1,4 +1,4 @@
-package br.com.ifsc.docedondocas.gerenciamentodocedondocas.Config;
+package br.com.ifsc.docedondocas.gerenciamentodocedondocas.config;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
