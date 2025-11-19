@@ -1,5 +1,6 @@
 package br.com.ifsc.docedondocas.gerenciamentodocedondocas.controller;
 
+import br.com.ifsc.docedondocas.gerenciamentodocedondocas.model.Pessoa;
 import br.com.ifsc.docedondocas.gerenciamentodocedondocas.model.usuario.RecuperacaoSenhaDDO;
 import br.com.ifsc.docedondocas.gerenciamentodocedondocas.model.usuario.Usuario;
 import br.com.ifsc.docedondocas.gerenciamentodocedondocas.model.usuario.UsuarioDTO;
@@ -104,10 +105,11 @@ public class UsuarioController {
 
     @RequestMapping(value = "/cadastro", method = RequestMethod.POST)
     public ResponseEntity cadastroUsuario(@Valid @RequestBody UsuarioDTO data) {
-        String senhaEncriptada = new BCryptPasswordEncoder().encode(data.senha());
+        String senhaEncriptada = null;
+        if ( !(data.senha() == null || data.senha().isEmpty()) ) senhaEncriptada = new BCryptPasswordEncoder().encode(data.senha());
         Usuario usuario = Usuario.builder()
                 .nome(data.nome())
-                .cpf(data.cpf())
+                .cpf(Pessoa.limpaCpf(data.cpf()))
                 .senha(senhaEncriptada)
                 .email(data.email())
                 .role(data.role())

@@ -5,6 +5,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -28,11 +29,13 @@ public class Usuario extends Pessoa implements UserDetails {
     private String senha;
 
     @NotEmpty(message = "O email não pode estar vazio")
+    @Email
     private String email;
 
     //@NotEmpty
     private UsuarioRole role;
 
+    @Override
     public Collection<? extends GrantedAuthority> getAuthorities(){
         if (this.role == UsuarioRole.ADMIN) return List.of(new SimpleGrantedAuthority("ROLE_ADMIN"), new SimpleGrantedAuthority("ROLE_USER"));
         else return List.of(new SimpleGrantedAuthority("ROLE_USER"));

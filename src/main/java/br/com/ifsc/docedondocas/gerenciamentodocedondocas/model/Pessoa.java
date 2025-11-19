@@ -2,6 +2,7 @@ package br.com.ifsc.docedondocas.gerenciamentodocedondocas.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,5 +25,11 @@ public class Pessoa {
 
     @NotEmpty(message = "O cpf não pode estar vazio")
     @Column(unique = true)
+    @Size(min = 11, max = 11, message = "O CPF deve ter exatamente 11 digitos")
     private String cpf;
+
+    static public String limpaCpf(String cpf){
+        if (cpf == null) return null;
+        return cpf.replaceAll("\\D", "").trim();
+    }
 }

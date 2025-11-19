@@ -91,9 +91,16 @@ public class ProdutoController {
     public ResponseEntity findProdutoById(@PathVariable long id) { return ResponseEntity.ok(produtoRepository.findById(id)); }
 
     @PostMapping("/cadastrar")
-    public ResponseEntity cadastrar(@Valid @RequestBody Produto produto) {
-        produtoRepository.save(produto);
-        return ResponseEntity.ok(produto);
+    public ResponseEntity cadastrar(@Valid @RequestBody Produto data) {
+        /*Produto produto = Produto.builder()
+                        .valor(data.getValor())
+                                .marca(data.getMarca())
+                                        .titulo(data.getTitulo())
+                                                .categoria(data.getCategoria())
+                                                        .build();*/
+        produtoRepository.save(data);
+        data = produtoRepository.findById(data.getId());
+        return ResponseEntity.ok(data);
     }
 
     @PostMapping("/deletar/{id}")

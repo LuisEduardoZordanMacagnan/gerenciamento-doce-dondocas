@@ -1,6 +1,7 @@
 package br.com.ifsc.docedondocas.gerenciamentodocedondocas.config;
 
 import br.com.ifsc.docedondocas.gerenciamentodocedondocas.service.authenticator.SecurityFilter;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,6 +11,7 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -31,10 +33,32 @@ public class SecurityConfiguration {
         return http
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+
+                .exceptionHandling(ex -> ex
+                        // Só chama entrypoint quando NÃO há autenticação
+                        .authenticationEntryPoint((req, res, e) -> {
+                            // Só dispara 401 se não existe autenticação
+                            if (SecurityContextHolder.getContext().getAuthentication() == null) {
+                                res.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                                res.setContentType("application/json");
+                                res.getWriter().write("{\"error\": \"Não autenticado\"}");
+                            } else {
+                                // Usuário está autenticado → deixe a exceção seguir
+                                throw e;
+                            }
+                        })
+
+                        // Para erros de autorização (roles), deixe o controller agir
+                        .accessDeniedHandler((req, res, e) -> {
+                            // Deixe o controller ou o @ControllerAdvice tratar
+                            throw e;
+                        })
+                )
+
                 .authorizeHttpRequests(authorizeRequests -> authorizeRequests
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/usuario/logar").permitAll()
-                        .requestMatchers(HttpMethod.GET, "errors").permitAll()
+                        .requestMatchers("/error", "/error/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/usuario/recuperar-senha").permitAll()
                         .requestMatchers(HttpMethod.POST, "/usuario/recuperar-senha/validar").permitAll()
                         .anyRequest().authenticated())
