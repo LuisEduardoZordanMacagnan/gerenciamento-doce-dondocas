@@ -22,19 +22,19 @@ public class ClienteController {
     @Autowired
     private ClienteRepository clienteRepository;
 
-    @RequestMapping(value = "/cadastro", method = RequestMethod.POST)
+    @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<Cliente> novoCliente(@Valid @RequestBody Cliente cliente) {
         clienteRepository.save(cliente);
         return ResponseEntity.ok(cliente);
     }
 
-    @RequestMapping(value = "/delete/{id}", method = RequestMethod.POST)
+    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     public ResponseEntity deletarUsuario(@PathVariable Long id){
         clienteRepository.deleteById(id.toString());
         return ResponseEntity.ok(true);
     }
 
-    @RequestMapping(value = "/editar", method = RequestMethod.POST)
+    @RequestMapping(method = RequestMethod.PUT)
     public ResponseEntity editarUsuario(@Valid @RequestBody Cliente data){
         Cliente cliente = clienteRepository.findById(data.getId());
         if(cliente == null) {
@@ -52,14 +52,18 @@ public class ClienteController {
         return ResponseEntity.ok(cliente);
     }
 
-    @RequestMapping(value = "/clientes", method = RequestMethod.POST)
+    @RequestMapping(method = RequestMethod.GET)
     public ResponseEntity listar(){
         return ResponseEntity.ok(clienteRepository.findAll());
     }
 
-    @RequestMapping(value = "/clientes/{id}", method = RequestMethod.POST)
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public ResponseEntity listar(@PathVariable long id){
-        return ResponseEntity.ok(clienteRepository.findById(id));
+        Cliente cliente = clienteRepository.findById(id);
+        if(cliente == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(cliente);
     }
 
 

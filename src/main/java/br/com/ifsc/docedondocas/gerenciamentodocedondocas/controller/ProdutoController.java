@@ -24,25 +24,29 @@ public class ProdutoController {
     @Autowired
     private ProdutoMarcaRepository produtoMarcaRepository;
 
-    @GetMapping("/marcas")
+    @GetMapping("/marca")
     public ResponseEntity findAllMarcas() { return ResponseEntity.ok(produtoMarcaRepository.findAll()); }
 
-    @GetMapping("/marcas/{id}")
-    public ResponseEntity findMarcasById(@PathVariable long id) { return ResponseEntity.ok(produtoMarcaRepository.findById(id)); }
+    @GetMapping("/marca/{id}")
+    public ResponseEntity findMarcasById(@PathVariable long id) {
+        ProdutoMarca pm = produtoMarcaRepository.findById(id);
+        if ( pm == null ) return ResponseEntity.notFound().build();
+        return ResponseEntity.ok(pm);
+    }
 
-    @PostMapping("/cadastrarMarca")
+    @PostMapping("/marca")
     public ResponseEntity cadastrarMarca(@Valid @RequestBody ProdutoMarca produtoMarca) {
         produtoMarcaRepository.save(produtoMarca);
         return ResponseEntity.ok(produtoMarca);
     }
 
-    @PostMapping("/deletarMarca/{id}")
+    @DeleteMapping("/marca/{id}")
     public ResponseEntity deletarMarca(@PathVariable long id) {
         produtoMarcaRepository.deleteById(id);
         return ResponseEntity.ok(true);
     }
 
-    @PostMapping("/editarMarca")
+    @PutMapping("/marca")
     public ResponseEntity editarMarca(@Valid @RequestBody ProdutoMarca data) {
         ProdutoMarca produtoMarca = produtoMarcaRepository.findById(data.getId()).orElse(null);
         if ( produtoMarca == null ) {
@@ -54,29 +58,31 @@ public class ProdutoController {
         return ResponseEntity.ok(produtoMarca);
     }
 
-    @GetMapping("/categorias")
+    @GetMapping("/categoria")
     public ResponseEntity findAllCategorias() {
         return ResponseEntity.ok(produtoCategoriaRepository.findAll());
     }
 
-    @GetMapping("/categorias/{id}")
+    @GetMapping("/categoria/{id}")
     public ResponseEntity findCategoriasById(@PathVariable long id) {
-        return ResponseEntity.ok(produtoCategoriaRepository.findById(id));
+        ProdutoCategoria pc = produtoCategoriaRepository.findById(id);
+        if (pc == null) return ResponseEntity.notFound().build();
+        return ResponseEntity.ok(pc);
     }
 
-    @PostMapping("/cadastrarCategoria")
+    @PostMapping("/categoria")
     public ResponseEntity cadastrarCategoria(@Valid @RequestBody ProdutoCategoria produtoCategoria) {
         produtoCategoriaRepository.save(produtoCategoria);
         return ResponseEntity.ok(produtoCategoria);
     }
 
-    @PostMapping("/deletarCategoria/{id}")
+    @DeleteMapping("/categoria/{id}")
     public ResponseEntity deletarCategoria(@PathVariable long id) {
         produtoCategoriaRepository.deleteById(id);
         return ResponseEntity.ok(true);
     }
 
-    @PostMapping("/editarCategoria")
+    @PutMapping("/categoria")
     public ResponseEntity editarCategoria(@Valid @RequestBody ProdutoCategoria data) {
         ProdutoCategoria produtoCategoria = produtoCategoriaRepository.findById(data.getId());
         if ( data.getCategoria() != null ) { produtoCategoria.setCategoria(data.getCategoria()); }
@@ -84,13 +90,17 @@ public class ProdutoController {
         return ResponseEntity.ok(produtoCategoria);
     }
 
-    @GetMapping("/produtos")
+    @GetMapping()
     public ResponseEntity findAllProdutos() { return ResponseEntity.ok(produtoRepository.findAll()); }
 
-    @GetMapping("/produtos/{id}")
-    public ResponseEntity findProdutoById(@PathVariable long id) { return ResponseEntity.ok(produtoRepository.findById(id)); }
+    @GetMapping("/{id}")
+    public ResponseEntity findProdutoById(@PathVariable long id) {
+        Produto produto = produtoRepository.findById(id);
+        if (produto == null) return ResponseEntity.notFound().build();
+        return ResponseEntity.ok(produto);
+    }
 
-    @PostMapping("/cadastrar")
+    @PostMapping()
     public ResponseEntity cadastrar(@Valid @RequestBody Produto data) {
         /*Produto produto = Produto.builder()
                         .valor(data.getValor())
@@ -103,13 +113,13 @@ public class ProdutoController {
         return ResponseEntity.ok(data);
     }
 
-    @PostMapping("/deletar/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity deletar(@PathVariable long id) {
         produtoRepository.deleteById(id);
         return ResponseEntity.ok(true);
     }
 
-    @PostMapping("/editar")
+    @PutMapping()
     public ResponseEntity editar(@Valid @RequestBody Produto data) {
         Produto produto = produtoRepository.findById(data.getId());
 
