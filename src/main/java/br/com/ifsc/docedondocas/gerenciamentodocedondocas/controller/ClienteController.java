@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import java.net.URI;
+
 @Controller
 @RequestMapping("/cliente")
 public class ClienteController {
@@ -25,13 +27,18 @@ public class ClienteController {
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<Cliente> novoCliente(@Valid @RequestBody Cliente cliente) {
         clienteRepository.save(cliente);
-        return ResponseEntity.ok(cliente);
+        URI location = URI.create("/cliente/"+cliente.getId());
+        return ResponseEntity.created(location).body(cliente);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     public ResponseEntity deletarUsuario(@PathVariable Long id){
+        Cliente cliente = clienteRepository.findById(id);
+        if(cliente == null) {
+            return ResponseEntity.notFound().build();
+        }
         clienteRepository.deleteById(id.toString());
-        return ResponseEntity.ok(true);
+        return ResponseEntity.noContent().build();
     }
 
     @RequestMapping(method = RequestMethod.PUT)

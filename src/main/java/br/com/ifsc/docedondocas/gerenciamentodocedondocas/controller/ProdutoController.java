@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.util.List;
 
 @Controller
@@ -37,13 +38,16 @@ public class ProdutoController {
     @PostMapping("/marca")
     public ResponseEntity cadastrarMarca(@Valid @RequestBody ProdutoMarca produtoMarca) {
         produtoMarcaRepository.save(produtoMarca);
-        return ResponseEntity.ok(produtoMarca);
+        URI location = URI.create("/produto/marca/"+produtoMarca.getId());
+        return ResponseEntity.created(location).body(produtoMarca);
     }
 
     @DeleteMapping("/marca/{id}")
     public ResponseEntity deletarMarca(@PathVariable long id) {
+        ProdutoMarca pm = produtoMarcaRepository.findById(id);
+        if ( pm == null ) return ResponseEntity.notFound().build();
         produtoMarcaRepository.deleteById(id);
-        return ResponseEntity.ok(true);
+        return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/marca")
@@ -73,13 +77,16 @@ public class ProdutoController {
     @PostMapping("/categoria")
     public ResponseEntity cadastrarCategoria(@Valid @RequestBody ProdutoCategoria produtoCategoria) {
         produtoCategoriaRepository.save(produtoCategoria);
-        return ResponseEntity.ok(produtoCategoria);
+        URI location = URI.create("/produto/categoria/"+produtoCategoria.getId());
+        return ResponseEntity.created(location).body(produtoCategoria);
     }
 
     @DeleteMapping("/categoria/{id}")
     public ResponseEntity deletarCategoria(@PathVariable long id) {
+        ProdutoCategoria pc = produtoCategoriaRepository.findById(id);
+        if (pc == null) return ResponseEntity.notFound().build();
         produtoCategoriaRepository.deleteById(id);
-        return ResponseEntity.ok(true);
+        return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/categoria")
@@ -109,14 +116,17 @@ public class ProdutoController {
                                                 .categoria(data.getCategoria())
                                                         .build();*/
         produtoRepository.save(data);
+        URI location = URI.create("/produto/"+data.getId());
         data = produtoRepository.findById(data.getId());
-        return ResponseEntity.ok(data);
+        return ResponseEntity.created(location).body(data);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity deletar(@PathVariable long id) {
+        Produto produto = produtoRepository.findById(id);
+        if (produto == null) return ResponseEntity.notFound().build();
         produtoRepository.deleteById(id);
-        return ResponseEntity.ok(true);
+        return ResponseEntity.noContent().build();
     }
 
     @PutMapping()

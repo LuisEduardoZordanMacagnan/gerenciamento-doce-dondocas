@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.mail.javamail.JavaMailSender;
 
 import java.io.UnsupportedEncodingException;
+import java.net.URI;
 
 @Controller
 @RequestMapping("/usuario")
@@ -90,7 +91,7 @@ public class UsuarioController {
             return ResponseEntity.badRequest().build();
         }
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/recuperar-senha/validar")
@@ -117,7 +118,8 @@ public class UsuarioController {
         //EDITAR DEPOIS
         usuario.setRole(UsuarioRole.ADMIN);
         u.save(usuario);
-        return ResponseEntity.ok(usuario);
+        URI location = URI.create("/usuario/"+usuario.getId());
+        return ResponseEntity.created(location).body(usuario);
     }
 
     @RequestMapping(method = RequestMethod.GET)
@@ -151,8 +153,10 @@ public class UsuarioController {
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     public ResponseEntity deletarUsuario(@PathVariable Long id){
+        Usuario usuario = u.findById(id);
+        if (usuario == null) return ResponseEntity.notFound().build();
         u.deleteById(id.toString());
-        return ResponseEntity.ok(true);
+        return ResponseEntity.noContent().build();
     }
 
     /*@GetMapping("/esqueci-senha")
