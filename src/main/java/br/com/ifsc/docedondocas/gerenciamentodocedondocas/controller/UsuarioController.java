@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.mail.javamail.JavaMailSender;
 
 import java.io.UnsupportedEncodingException;
+import java.net.URI;
 
 @Controller
 @RequestMapping("/usuario")
@@ -90,7 +91,7 @@ public class UsuarioController {
             return ResponseEntity.badRequest().build();
         }
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/recuperar-senha/validar")
@@ -103,7 +104,7 @@ public class UsuarioController {
         return ResponseEntity.ok(usuario);
     }
 
-    @RequestMapping(value = "/cadastro", method = RequestMethod.POST)
+    @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity cadastroUsuario(@Valid @RequestBody UsuarioDTO data) {
         String senhaEncriptada = null;
         if ( !(data.senha() == null || data.senha().isEmpty()) ) senhaEncriptada = new BCryptPasswordEncoder().encode(data.senha());
@@ -117,20 +118,23 @@ public class UsuarioController {
         //EDITAR DEPOIS
         usuario.setRole(UsuarioRole.ADMIN);
         u.save(usuario);
-        return ResponseEntity.ok(usuario);
+        URI location = URI.create("/usuario/"+usuario.getId());
+        return ResponseEntity.created(location).body(usuario);
     }
 
-    @RequestMapping(value = "/usuarios", method = RequestMethod.POST)
+    @RequestMapping(method = RequestMethod.GET)
     public ResponseEntity listar(){
         return ResponseEntity.ok(u.findAll());
     }
 
-    @RequestMapping(value = "/usuarios/{id}", method = RequestMethod.POST)
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public ResponseEntity listar(@PathVariable long id){
-        return ResponseEntity.ok(u.getUsuarioById(id));
+        Usuario usuario = u.findById(id);
+        if (usuario == null) return ResponseEntity.notFound().build();
+        return ResponseEntity.ok(usuario);
     }
 
-    @RequestMapping(value = "/editar", method = RequestMethod.POST)
+    @RequestMapping(method = RequestMethod.PUT)
     public ResponseEntity editarUsuario(@Valid @RequestBody UsuarioDTO data){
         Usuario usuario = u.findById(data.id());
         if(usuario == null) {
@@ -147,10 +151,12 @@ public class UsuarioController {
         return ResponseEntity.ok(usuario);
     }
 
-    @RequestMapping(value = "/delete/{id}", method = RequestMethod.POST)
+    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     public ResponseEntity deletarUsuario(@PathVariable Long id){
+        Usuario usuario = u.findById(id);
+        if (usuario == null) return ResponseEntity.notFound().build();
         u.deleteById(id.toString());
-        return ResponseEntity.ok(true);
+        return ResponseEntity.noContent().build();
     }
 
     /*@GetMapping("/esqueci-senha")
