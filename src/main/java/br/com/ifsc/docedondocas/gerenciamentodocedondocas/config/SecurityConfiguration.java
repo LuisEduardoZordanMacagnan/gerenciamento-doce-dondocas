@@ -61,11 +61,13 @@ public class SecurityConfiguration {
                         .requestMatchers("/error", "/error/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/usuario/recuperar-senha").permitAll()
                         .requestMatchers(HttpMethod.POST, "/usuario/recuperar-senha/validar").permitAll()
-                        .anyRequest().authenticated())
-                //.formLogin(form -> form.loginPage("/usuario/login"))
+                        .anyRequest().permitAll())
+                .formLogin(form -> form.loginPage("/usuario/login"))
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
+
+
 
     @Bean
     public AuthenticationManager getAuthenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
