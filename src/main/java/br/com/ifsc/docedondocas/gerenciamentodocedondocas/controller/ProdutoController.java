@@ -125,7 +125,7 @@ public class ProdutoController {
     public ResponseEntity deletar(@PathVariable long id) {
         Produto produto = produtoRepository.findById(id);
         if (produto == null) return ResponseEntity.notFound().build();
-        produtoRepository.deleteById(id);
+        produtoRepository.delete(produto);
         return ResponseEntity.noContent().build();
     }
 
@@ -133,8 +133,34 @@ public class ProdutoController {
     public ResponseEntity editar(@Valid @RequestBody Produto data) {
         Produto produto = produtoRepository.findById(data.getId());
 
-        if ( data.getCategoria() != null ) { produto.setCategoria(data.getCategoria()); }
-        if ( data.getMarca() != null ) { produto.setMarca(data.getMarca()); }
+        if ( produto == null ) return ResponseEntity.notFound().build();
+
+        if (data.getCategoria() != null) {
+            ProdutoCategoria categoria = produtoCategoriaRepository.findById(data.getCategoria().getId());
+            if (categoria != null) {
+                produto.setCategoria(categoria);
+            } else {
+                // Possivel autocriacao
+            }
+        }
+        else{
+            produto.setCategoria(null);
+        }
+
+        if (data.getMarca() != null) {
+            ProdutoMarca marca = produtoMarcaRepository.findById(data.getMarca().getId()).orElse(null);
+            if (marca != null) {
+                produto.setMarca(marca);
+            } else {
+                // Possivel autocriacao
+            }
+        }
+        else{
+            produto.setMarca(null);
+        }
+
+        produto.setValor(data.getValor());
+        produto.setTitulo(data.getTitulo());
 
         produtoRepository.save(produto);
         return ResponseEntity.ok(produto);
