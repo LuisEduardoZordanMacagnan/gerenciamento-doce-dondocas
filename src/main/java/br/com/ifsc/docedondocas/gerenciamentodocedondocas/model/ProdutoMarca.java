@@ -24,4 +24,5 @@ public class ProdutoMarca {
     @NotEmpty(message = "Marca não pode ser vazia")
     @Size(min = 2, message = "Marca precisa ser maior que 2 caracteres")
     private String marca;
+    private Boolean ativo;
 }

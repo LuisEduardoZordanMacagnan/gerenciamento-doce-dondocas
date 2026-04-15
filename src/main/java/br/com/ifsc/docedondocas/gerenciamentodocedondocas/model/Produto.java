@@ -28,4 +28,5 @@ public class Produto {
     @ManyToOne
     @JoinColumn(name = "categoria_id")
     private ProdutoCategoria categoria;
+    private Boolean ativo;
 }

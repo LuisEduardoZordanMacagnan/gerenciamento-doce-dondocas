@@ -35,6 +35,8 @@ public class Usuario extends Pessoa implements UserDetails {
     //@NotEmpty
     private UsuarioRole role;
 
+    private Boolean ativo;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities(){
         if (this.role == UsuarioRole.ADMIN) return List.of(new SimpleGrantedAuthority("ROLE_ADMIN"), new SimpleGrantedAuthority("ROLE_USER"));

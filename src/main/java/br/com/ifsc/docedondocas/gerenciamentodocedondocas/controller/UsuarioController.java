@@ -15,6 +15,7 @@ import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -62,7 +63,11 @@ public class UsuarioController {
             return "redirect:"+root+"/lista";
         }*/
 
-        var token = tokenService.generateToken((Usuario) auth.getPrincipal());
+        Usuario usuario = (Usuario) auth.getPrincipal();
+
+        if ( usuario == null || !usuario.isEnabled() ) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+
+        var token = tokenService.generateToken(usuario);
 
         return ResponseEntity.ok(token);
     }
@@ -114,6 +119,7 @@ public class UsuarioController {
                 .senha(senhaEncriptada)
                 .email(data.email())
                 .role(data.role())
+                .ativo(true)
                 .build(); //new Usuario(data.nome(), data.cpf(), senhaEncriptada, data.email(), data.role());
         //EDITAR DEPOIS
         usuario.setRole(UsuarioRole.ADMIN);
@@ -157,6 +163,15 @@ public class UsuarioController {
         if (usuario == null) return ResponseEntity.notFound().build();
         u.deleteById(id.toString());
         return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("ativacao/{id}")
+    public ResponseEntity ativacao(@PathVariable Long id, @RequestParam Boolean ativo){
+        Usuario usuario = u.findById(id);
+        if (usuario == null) return ResponseEntity.notFound().build();
+        usuario.setAtivo(ativo);
+        u.save(usuario);
+        return ResponseEntity.ok(usuario);
     }
 
     /*@GetMapping("/esqueci-senha")

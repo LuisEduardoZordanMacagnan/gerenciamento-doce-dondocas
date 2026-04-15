@@ -37,6 +37,7 @@ public class ProdutoController {
 
     @PostMapping("/marca")
     public ResponseEntity cadastrarMarca(@Valid @RequestBody ProdutoMarca produtoMarca) {
+        produtoMarca.setAtivo(true);
         produtoMarcaRepository.save(produtoMarca);
         URI location = URI.create("/produto/marca/"+produtoMarca.getId());
         return ResponseEntity.created(location).body(produtoMarca);
@@ -62,6 +63,15 @@ public class ProdutoController {
         return ResponseEntity.ok(produtoMarca);
     }
 
+    @PutMapping("/marca/ativacao/{id}")
+    public ResponseEntity marcaAtivacao(@PathVariable long id, @RequestParam boolean ativo) {
+        ProdutoMarca produtoMarca = produtoMarcaRepository.findById(id);
+        if ( produtoMarca == null ) return ResponseEntity.notFound().build();
+        produtoMarca.setAtivo(ativo);
+        produtoMarcaRepository.save(produtoMarca);
+        return ResponseEntity.ok(produtoMarca);
+    }
+
     @GetMapping("/categoria")
     public ResponseEntity findAllCategorias() {
         return ResponseEntity.ok(produtoCategoriaRepository.findAll());
@@ -76,6 +86,7 @@ public class ProdutoController {
 
     @PostMapping("/categoria")
     public ResponseEntity cadastrarCategoria(@Valid @RequestBody ProdutoCategoria produtoCategoria) {
+        produtoCategoria.setAtivo(true);
         produtoCategoriaRepository.save(produtoCategoria);
         URI location = URI.create("/produto/categoria/"+produtoCategoria.getId());
         return ResponseEntity.created(location).body(produtoCategoria);
@@ -97,6 +108,15 @@ public class ProdutoController {
         return ResponseEntity.ok(produtoCategoria);
     }
 
+    @PutMapping("/categoria/ativacao/{id}")
+    public ResponseEntity categoriaAtivacao(@PathVariable long id, @RequestParam boolean ativo) {
+        ProdutoCategoria pc = produtoCategoriaRepository.findById(id);
+        if ( pc == null ) return ResponseEntity.notFound().build();
+        pc.setAtivo(ativo);
+        produtoCategoriaRepository.save(pc);
+        return ResponseEntity.ok(pc);
+    }
+
     @GetMapping()
     public ResponseEntity findAllProdutos() { return ResponseEntity.ok(produtoRepository.findAll()); }
 
@@ -115,6 +135,7 @@ public class ProdutoController {
                                         .titulo(data.getTitulo())
                                                 .categoria(data.getCategoria())
                                                         .build();*/
+        data.setAtivo(true);
         produtoRepository.save(data);
         URI location = URI.create("/produto/"+data.getId());
         data = produtoRepository.findById(data.getId());
@@ -162,6 +183,15 @@ public class ProdutoController {
         produto.setValor(data.getValor());
         produto.setTitulo(data.getTitulo());
 
+        produtoRepository.save(produto);
+        return ResponseEntity.ok(produto);
+    }
+
+    @PutMapping("/ativacao/{id}")
+    public ResponseEntity ativacao(@PathVariable long id, @RequestParam boolean ativo) {
+        Produto produto = produtoRepository.findById(id);
+        if (produto == null) return ResponseEntity.notFound().build();
+        produto.setAtivo(ativo);
         produtoRepository.save(produto);
         return ResponseEntity.ok(produto);
     }

@@ -24,4 +24,5 @@ public class ProdutoCategoria {
     @NotEmpty(message = "Categoria não pode ser vazia")
     @Size(min = 2, message = "Categoria precisa ser maior que 2 caracteres")
     private String categoria;
+    private Boolean ativo;
 }
