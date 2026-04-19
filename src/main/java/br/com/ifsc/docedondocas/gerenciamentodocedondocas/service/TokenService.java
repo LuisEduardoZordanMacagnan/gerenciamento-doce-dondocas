@@ -5,7 +5,7 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import io.github.cdimascio.dotenv.Dotenv;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -14,8 +14,8 @@ import java.time.ZoneOffset;
 
 @Service
 public class TokenService {
-    final Dotenv config = Dotenv.configure().load();
-    private String secret = config.get("TOKEN_SECRET");
+    @Value("${jwt.secret}")
+    private String secret;
 
     public String generateToken(Usuario usuario) {
         if ( secret.isEmpty() ){
