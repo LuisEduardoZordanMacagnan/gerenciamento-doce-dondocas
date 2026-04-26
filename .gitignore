@@ -29,3 +29,6 @@ replay_pid*
 *.iml
 
 /target/
+
+src/main/resources/application.properties
+target/
