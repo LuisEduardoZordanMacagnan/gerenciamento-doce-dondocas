@@ -18,6 +18,9 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @SuperBuilder
 public class Cliente extends Pessoa {
+
+    private Boolean ativo = true;
+
     @NotEmpty(message = "O telefone não pode estar vazio")
     private String telefone;
 

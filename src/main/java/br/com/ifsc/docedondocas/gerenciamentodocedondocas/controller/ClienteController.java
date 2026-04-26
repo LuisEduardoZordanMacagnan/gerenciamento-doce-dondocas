@@ -10,14 +10,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 
-@Controller
+@RestController
 @RequestMapping("/cliente")
 public class ClienteController {
 
@@ -39,6 +36,21 @@ public class ClienteController {
         }
         clienteRepository.deleteById(id.toString());
         return ResponseEntity.noContent().build();
+    }
+
+    @RequestMapping(value = "/{id}/status", method = RequestMethod.PUT)
+    public ResponseEntity<Cliente> alterarStatus(@PathVariable Long id){
+
+        Cliente cliente = clienteRepository.findById(id);
+
+        if(cliente == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        cliente.setAtivo(!cliente.getAtivo());
+        clienteRepository.save(cliente);
+
+        return ResponseEntity.ok(cliente);
     }
 
     @RequestMapping(method = RequestMethod.PUT)
