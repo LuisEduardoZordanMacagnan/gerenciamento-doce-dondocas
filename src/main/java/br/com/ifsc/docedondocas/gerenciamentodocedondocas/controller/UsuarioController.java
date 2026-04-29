@@ -73,8 +73,8 @@ public class UsuarioController {
     }
 
     @PostMapping("/valida-login")
-    public ResponseEntity validaLogin(@Valid @RequestBody TokenDDO data) throws UnsupportedEncodingException {
-        String cpf = tokenService.validateToken(data.token());
+    public ResponseEntity validaLogin(@RequestHeader("Authorization") String authHeader) throws UnsupportedEncodingException {
+        String cpf = tokenService.validateToken(authHeader.replace("Bearer ", ""));
         Usuario usuario = usuarioRepository.findByCpf(cpf);
 
         if ( usuario == null ) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
