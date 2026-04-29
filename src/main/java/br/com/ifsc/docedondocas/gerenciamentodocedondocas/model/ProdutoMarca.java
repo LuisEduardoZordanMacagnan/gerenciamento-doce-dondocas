@@ -1,9 +1,6 @@
 package br.com.ifsc.docedondocas.gerenciamentodocedondocas.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -25,4 +22,11 @@ public class ProdutoMarca {
     @Size(min = 2, message = "Marca precisa ser maior que 2 caracteres")
     private String marca;
     private Boolean ativo;
+
+    @PrePersist
+    protected void onCreate() {
+        if (ativo == null) {
+            ativo = true;
+        }
+    }
 }

@@ -1,10 +1,7 @@
 package br.com.ifsc.docedondocas.gerenciamentodocedondocas.model.usuario;
 
 import br.com.ifsc.docedondocas.gerenciamentodocedondocas.model.Pessoa;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
@@ -59,4 +56,11 @@ public class Usuario extends Pessoa implements UserDetails {
         this.email = email;
         this.role = role;
     }*/
+
+    @PrePersist
+    protected void onCreate() {
+        if (ativo == null) {
+            ativo = true;
+        }
+    }
 }

@@ -1,16 +1,15 @@
 package br.com.ifsc.docedondocas.gerenciamentodocedondocas.model.cliente;
 
 import br.com.ifsc.docedondocas.gerenciamentodocedondocas.model.Pessoa;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Getter @Setter
@@ -32,4 +31,13 @@ public class Cliente extends Pessoa {
 
     @NotEmpty(message = "O número da casa não pode estar vazio")
     private String numeroCasa;
+
+    private Boolean ativo;
+
+    @PrePersist
+    protected void onCreate() {
+        if (ativo == null) {
+            ativo = true;
+        }
+    }
 }

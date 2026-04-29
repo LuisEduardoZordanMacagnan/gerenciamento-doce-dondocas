@@ -1,5 +1,6 @@
 package br.com.ifsc.docedondocas.gerenciamentodocedondocas.controller;
 
+import br.com.ifsc.docedondocas.gerenciamentodocedondocas.model.Produto;
 import br.com.ifsc.docedondocas.gerenciamentodocedondocas.model.cliente.Cliente;
 import br.com.ifsc.docedondocas.gerenciamentodocedondocas.model.usuario.Usuario;
 import br.com.ifsc.docedondocas.gerenciamentodocedondocas.model.usuario.UsuarioDTO;
@@ -10,14 +11,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 
-@Controller
+@RestController
 @RequestMapping("/cliente")
 public class ClienteController {
 
@@ -73,5 +71,12 @@ public class ClienteController {
         return ResponseEntity.ok(cliente);
     }
 
-
+    @PutMapping("/ativacao/{id}")
+    public ResponseEntity ativacao(@PathVariable long id, @RequestParam boolean ativo) {
+        Cliente cliente = clienteRepository.findById(id);
+        if (cliente == null) return ResponseEntity.notFound().build();
+        cliente.setAtivo(ativo);
+        clienteRepository.save(cliente);
+        return ResponseEntity.ok(cliente);
+    }
 }

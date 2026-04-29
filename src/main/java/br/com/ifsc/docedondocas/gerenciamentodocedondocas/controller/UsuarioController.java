@@ -1,10 +1,7 @@
 package br.com.ifsc.docedondocas.gerenciamentodocedondocas.controller;
 
 import br.com.ifsc.docedondocas.gerenciamentodocedondocas.model.Pessoa;
-import br.com.ifsc.docedondocas.gerenciamentodocedondocas.model.usuario.RecuperacaoSenhaDDO;
-import br.com.ifsc.docedondocas.gerenciamentodocedondocas.model.usuario.Usuario;
-import br.com.ifsc.docedondocas.gerenciamentodocedondocas.model.usuario.UsuarioDTO;
-import br.com.ifsc.docedondocas.gerenciamentodocedondocas.model.usuario.UsuarioRole;
+import br.com.ifsc.docedondocas.gerenciamentodocedondocas.model.usuario.*;
 import br.com.ifsc.docedondocas.gerenciamentodocedondocas.repository.UserDetailRepository;
 import br.com.ifsc.docedondocas.gerenciamentodocedondocas.repository.UsuarioRepository;
 import br.com.ifsc.docedondocas.gerenciamentodocedondocas.service.CookieService;
@@ -19,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -29,7 +27,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 
-@Controller
+@RestController
 @RequestMapping("/usuario")
 public class UsuarioController {
     private static final Logger log = LoggerFactory.getLogger(UsuarioController.class);
@@ -48,6 +46,8 @@ public class UsuarioController {
 
     @Autowired
     TokenService tokenService;
+    @Autowired
+    private UsuarioRepository usuarioRepository;
 
     @PostMapping("/logar")
     public ResponseEntity login(@Valid @RequestBody UsuarioDTO data) throws UnsupportedEncodingException {
@@ -70,6 +70,16 @@ public class UsuarioController {
         var token = tokenService.generateToken(usuario);
 
         return ResponseEntity.ok(token);
+    }
+
+    @PostMapping("/valida-login")
+    public ResponseEntity validaLogin(@Valid @RequestBody TokenDDO data) throws UnsupportedEncodingException {
+        String cpf = tokenService.validateToken(data.token());
+        Usuario usuario = usuarioRepository.findByCpf(cpf);
+
+        if ( usuario == null ) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+
+        return ResponseEntity.ok(usuario);
     }
 
     @PostMapping("/sair")
@@ -119,7 +129,6 @@ public class UsuarioController {
                 .senha(senhaEncriptada)
                 .email(data.email())
                 .role(data.role())
-                .ativo(true)
                 .build(); //new Usuario(data.nome(), data.cpf(), senhaEncriptada, data.email(), data.role());
         //EDITAR DEPOIS
         usuario.setRole(UsuarioRole.ADMIN);

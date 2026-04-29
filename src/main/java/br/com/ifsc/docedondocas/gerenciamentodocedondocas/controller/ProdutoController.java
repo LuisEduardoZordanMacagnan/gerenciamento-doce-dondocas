@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.net.URI;
 import java.util.List;
 
-@Controller
+@RestController
 @RequestMapping("/produto")
 public class ProdutoController {
     @Autowired
@@ -37,7 +37,6 @@ public class ProdutoController {
 
     @PostMapping("/marca")
     public ResponseEntity cadastrarMarca(@Valid @RequestBody ProdutoMarca produtoMarca) {
-        produtoMarca.setAtivo(true);
         produtoMarcaRepository.save(produtoMarca);
         URI location = URI.create("/produto/marca/"+produtoMarca.getId());
         return ResponseEntity.created(location).body(produtoMarca);
@@ -86,7 +85,6 @@ public class ProdutoController {
 
     @PostMapping("/categoria")
     public ResponseEntity cadastrarCategoria(@Valid @RequestBody ProdutoCategoria produtoCategoria) {
-        produtoCategoria.setAtivo(true);
         produtoCategoriaRepository.save(produtoCategoria);
         URI location = URI.create("/produto/categoria/"+produtoCategoria.getId());
         return ResponseEntity.created(location).body(produtoCategoria);
@@ -135,7 +133,6 @@ public class ProdutoController {
                                         .titulo(data.getTitulo())
                                                 .categoria(data.getCategoria())
                                                         .build();*/
-        data.setAtivo(true);
         produtoRepository.save(data);
         URI location = URI.create("/produto/"+data.getId());
         data = produtoRepository.findById(data.getId());

@@ -29,4 +29,11 @@ public class Produto {
     @JoinColumn(name = "categoria_id")
     private ProdutoCategoria categoria;
     private Boolean ativo;
+
+    @PrePersist
+    protected void onCreate() {
+        if (ativo == null) {
+            ativo = true;
+        }
+    }
 }
