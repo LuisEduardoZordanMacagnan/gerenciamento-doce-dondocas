@@ -61,6 +61,7 @@ public class SecurityConfiguration {
                         .requestMatchers("/error", "/error/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/usuario/recuperar-senha").permitAll()
                         .requestMatchers(HttpMethod.POST, "/usuario/recuperar-senha/validar").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/usuario/primeirousuario").permitAll()
                         .anyRequest().authenticated())
                 .formLogin(form -> form.loginPage("/usuario/login"))
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)

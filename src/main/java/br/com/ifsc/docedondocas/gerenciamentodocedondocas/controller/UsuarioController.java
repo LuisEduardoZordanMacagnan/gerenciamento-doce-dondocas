@@ -188,4 +188,17 @@ public class UsuarioController {
         return "usuario/esqueci-senha";
     }*/
 
+    @GetMapping("primeirousuario")
+    public ResponseEntity primeiroUsuario(){
+        if ( u.count() != 0 )
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        UsuarioDTO usuarioDTO = new UsuarioDTO(
+        0,
+        "adm",
+        "11111111111",
+        "123",
+        "A@A.A.A",
+        UsuarioRole.ADMIN);
+        return cadastroUsuario(usuarioDTO);
+    }
 }
