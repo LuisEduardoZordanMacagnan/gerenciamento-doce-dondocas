@@ -1,13 +1,10 @@
-version: '3.9'
-
 services:
-
   mysql:
     image: mysql:8
-    container_name: mysql-doce-dondocas
+    container_name: docedondoca_database
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_DATABASE: doce_dondocas
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
     ports:
@@ -20,27 +17,27 @@ services:
       timeout: 5s
       retries: 10
 
-  backend:
-    build: .
-    container_name: backend-doce-dondocas
+  backend-api:
+    image: luiseduardozordanmacagnan/back-doce-dondocas:1.0
+    container_name: docedondoca_backend_container
+    ports:
+      - "8080:8080"
     depends_on:
       mysql:
         condition: service_healthy
-    env_file:
-      - .env
-    ports:
-      - "8080:8080"
-
-  phpmyadmin:
-    image: phpmyadmin/phpmyadmin
-    container_name: phpmyadmin-doce-dondocas
-    ports:
-      - "8081:80"
     environment:
-      PMA_HOST: mysql
-      PMA_PORT: 3306
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/doce_dondocas?useTimezone=true&serverTimezone=UTC
+      - SPRING_DATASOURCE_USERNAME=${MYSQL_USER}
+      - SPRING_DATASOURCE_PASSWORD=${MYSQL_PASSWORD}
+      - TOKEN_SECRET=${TOKEN_SECRET}
+
+  frontend-app:
+    image: luiseduardozordanmacagnan/front-doce-dondocas:1.0
+    container_name: docedondoca_frontend_container
+    ports:
+      - "5173:5173"
     depends_on:
-      - mysql
+      - backend-api
 
 volumes:
   mysql_data:
